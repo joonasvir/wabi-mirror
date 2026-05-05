@@ -1,13 +1,11 @@
 {
   "version": 2,
-  "buildCommand": "echo 'no build'",
-  "outputDirectory": "public",
   "functions": {
     "api/question.js": { "maxDuration": 30 },
     "api/mirror.js": { "maxDuration": 30 }
   },
-  "rewrites": [
-    { "source": "/api/question", "destination": "/api/question" },
-    { "source": "/api/mirror", "destination": "/api/mirror" }
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/(.*)", "dest": "/public/$1" }
   ]
 }
