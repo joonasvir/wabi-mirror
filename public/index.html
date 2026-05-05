@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wabi Mirror</title>
+<style>
+@font-face {
+  font-family: 'Selecta';
+  src: url('/fonts/Selecta-Regular.otf') format('opentype');
+  font-weight: 400;
+}
+@font-face {
+  font-family: 'Selecta';
+  src: url('/fonts/Selecta-Medium.otf') format('opentype');
+  font-weight: 500;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f4f4f4;
+  --white: #ffffff;
+  --black: #090909;
+  --text-primary: #0a0a0a;
+  --text-secondary: #6b6b6b;
+  --text-muted: #a3a3a3;
+  --tile-shadow: 0px 1.2px 2.4px rgba(0,0,0,0.08);
+  --tile-inner: inset -1.1px -1.1px 1.1px rgba(0,0,0,0.18), inset 1.1px 1.1px 1.1px rgba(0,0,0,0.03);
+  --radius-tile: 24px;
+  --font: 'Selecta', -apple-system, sans-serif;
+}
+
+html, body {
+  height: 100%;
+  background: #e5e5e5;
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Phone shell — centers and constrains to mobile */
+#app {
+  position: relative;
+  width: 393px;
+  min-height: 100vh;
+  margin: 0 auto;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+/* ─── Screens ──────────────────────────────────────────────── */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+.screen.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ─── Status Bar ───────────────────────────────────────────── */
+.status-bar {
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  flex-shrink: 0;
+}
+.status-time { font-size: 15px; font-weight: 500; color: var(--text-primary); }
+.status-icons { display: flex; gap: 6px; align-items: center; }
+.status-icons svg { opacity: 0.85; }
+
+/* ─── Intro Screen ─────────────────────────────────────────── */
+#screen-intro {
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+}
+
+.intro-orblet {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.9), rgba(200,200,200,0.3));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.8);
+  box-shadow:
+    0 12px 40px rgba(0,0,0,0.12),
+    0 4px 16px rgba(0,0,0,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    inset 0 -1px 0 rgba(0,0,0,0.06);
+  margin-bottom: 40px;
+  animation: orbletFloat 4s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.intro-orblet::after {
+  content: '';
+  position: absolute;
+  top: 10%;
+  left: 15%;
+  width: 60%;
+  height: 40%;
+  background: radial-gradient(ellipse, rgba(255,255,255,0.7), transparent);
+  border-radius: 50%;
+  transform: rotate(-30deg);
+}
+
+@keyframes orbletFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.intro-title {
+  font-size: 32px;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+  margin-bottom: 12px;
+}
+.intro-subtitle {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  text-align: center;
+  max-width: 260px;
+  line-height: 22px;
+  margin-bottom: 56px;
+}
+
+.btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  padding: 0 48px;
+  border-radius: 999px;
+  background: var(--text-primary);
+  color: white;
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.btn-primary:active { transform: scale(0.97); opacity: 0.85; }
+
+/* ─── Question Screen ──────────────────────────────────────── */
+#screen-question {
+  background: var(--bg);
+}
+
+.q-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px 0;
+  height: 72px;
+  flex-shrink: 0;
+}
+
+.btn-back {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.04);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+.btn-back:active { transform: scale(0.92); }
+
+/* Progress ring */
+.progress-ring-wrap {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.progress-ring-svg {
+  position: absolute;
+  inset: 0;
+  transform: rotate(-90deg);
+}
+.progress-track {
+  fill: none;
+  stroke: rgba(0,0,0,0.08);
+  stroke-width: 2.5;
+}
+.progress-fill {
+  fill: none;
+  stroke: var(--text-primary);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mini-orblet {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.95), rgba(210,210,210,0.4));
+  border: 1px solid rgba(255,255,255,0.7);
+  box-shadow:
+    0 4px 16px rgba(0,0,0,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    inset 0 -1px 0 rgba(0,0,0,0.05);
+  position: relative;
+  overflow: hidden;
+}
+.mini-orblet::after {
+  content: '';
+  position: absolute;
+  top: 12%;
+  left: 16%;
+  width: 55%;
+  height: 38%;
+  background: radial-gradient(ellipse, rgba(255,255,255,0.75), transparent);
+  border-radius: 50%;
+  transform: rotate(-25deg);
+}
+
+/* Spacer on right to keep ring centered */
+.q-topbar-right {
+  width: 44px;
+}
+
+.q-question {
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-align: center;
+  line-height: 30px;
+  padding: 24px 40px 28px;
+  letter-spacing: -0.3px;
+}
+
+/* 2×2 tile grid */
+.options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 0 10px;
+  flex: 1;
+}
+
+.option-tile {
+  background: var(--white);
+  border-radius: var(--radius-tile);
+  box-shadow: var(--tile-shadow), var(--tile-inner);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 18px 12px 16px;
+  gap: 20px;
+  cursor: pointer;
+  border: none;
+  font-family: var(--font);
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.25s ease,
+    box-shadow 0.2s ease;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+.option-tile:active {
+  transform: scale(0.97);
+}
+
+.option-tile .tile-icon {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.option-tile .tile-label {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-align: center;
+  line-height: 18px;
+}
+
+/* Selection states */
+.option-tile.selected {
+  box-shadow: 0 0 0 2px var(--text-primary), var(--tile-shadow);
+  transform: scale(1.03);
+}
+.option-tile.selected .tile-icon {
+  transform: scale(1.08);
+}
+.option-tile.fading {
+  opacity: 0.25;
+  transform: scale(0.95);
+}
+.option-tile.exit {
+  opacity: 0;
+  transform: translateY(20px) scale(0.93);
+  pointer-events: none;
+}
+.option-tile.enter {
+  opacity: 0;
+  transform: translateY(24px) scale(0.95);
+}
+.option-tile.enter-active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition:
+    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.3s ease;
+}
+
+/* Stagger delays */
+.option-tile:nth-child(1) { transition-delay: 0s; }
+.option-tile:nth-child(2) { transition-delay: 0.05s; }
+.option-tile:nth-child(3) { transition-delay: 0.1s; }
+.option-tile:nth-child(4) { transition-delay: 0.15s; }
+
+/* Bottom area */
+.q-bottom {
+  padding: 20px 16px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-results {
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 999px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease, color 0.2s ease;
+}
+.btn-results.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+.btn-results:hover { color: var(--text-secondary); }
+
+/* Loading dots */
+.loading-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.loading-dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  animation: dotPulse 1.2s ease-in-out infinite;
+}
+.loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dotPulse {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+/* ─── Mirror Screen ────────────────────────────────────────── */
+#screen-mirror {
+  background: #0a0a0a;
+  align-items: center;
+}
+
+.mirror-status-bar { color: white; }
+
+.mirror-topbar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px 0;
+  height: 64px;
+  flex-shrink: 0;
+}
+
+.btn-back-dark {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+.btn-back-dark:active { transform: scale(0.92); }
+
+/* 5-circle Wabi Mark */
+.wabi-mark {
+  margin: 24px 0 28px;
+  display: grid;
+  grid-template-columns: 90px 90px 90px;
+  grid-template-rows: 90px 90px;
+  gap: 8px;
+  justify-content: center;
+}
+
+.wabi-circle {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  position: relative;
+}
+.wabi-circle canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Pentagon arrangement:
+   col1    col2    col3
+   [E]     [I]
+       [R]
+   [B]     [A]
+*/
+.wabi-circle:nth-child(1) { grid-column: 1; grid-row: 1; }
+.wabi-circle:nth-child(2) { grid-column: 3; grid-row: 1; }
+.wabi-circle:nth-child(3) { grid-column: 2; grid-row: 1; margin-top: 40px; } /* center-top offset */
+.wabi-circle:nth-child(4) { grid-column: 1; grid-row: 2; }
+.wabi-circle:nth-child(5) { grid-column: 3; grid-row: 2; }
+
+.mirror-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.mirror-text {
+  font-size: 18px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.92);
+  line-height: 27px;
+  text-align: center;
+  padding: 0 32px;
+  letter-spacing: -0.1px;
+  margin-bottom: 28px;
+}
+
+.mirror-user-num {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 32px;
+}
+
+.mirror-actions {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  padding: 0 24px;
+}
+
+.btn-share {
+  flex: 1;
+  height: 52px;
+  border-radius: 999px;
+  background: white;
+  color: #0a0a0a;
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: opacity 0.2s ease;
+}
+.btn-share:active { opacity: 0.85; }
+
+.btn-apps {
+  flex: 1;
+  height: 52px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.85);
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 500;
+  border: 1px solid rgba(255,255,255,0.15);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: opacity 0.2s ease;
+}
+.btn-apps:active { opacity: 0.75; }
+
+/* ─── Apps Screen ──────────────────────────────────────────── */
+#screen-apps {
+  background: #0a0a0a;
+}
+
+.apps-topbar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 8px 16px 0;
+  height: 64px;
+  flex-shrink: 0;
+}
+
+.apps-title {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  text-align: center;
+  width: 100%;
+  padding: 20px 24px 12px;
+}
+
+.apps-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 16px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.app-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 20px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.app-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.app-card-num {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.5);
+  flex-shrink: 0;
+}
+
+.app-card-content { flex: 1; }
+
+.app-card-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.92);
+  margin-bottom: 4px;
+}
+
+.app-card-reason {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.45);
+  line-height: 19px;
+}
+
+.apps-done-btn {
+  margin: 8px 16px 0;
+  flex-shrink: 0;
+  height: 52px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.6);
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 500;
+  border: 1px solid rgba(255,255,255,0.1);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.apps-done-btn.visible { opacity: 1; }
+
+/* ─── Transition animations ────────────────────────────────── */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.mirror-reveal > * {
+  animation: fadeSlideUp 0.5s ease both;
+}
+.mirror-reveal > *:nth-child(1) { animation-delay: 0.1s; }
+.mirror-reveal > *:nth-child(2) { animation-delay: 0.25s; }
+.mirror-reveal > *:nth-child(3) { animation-delay: 0.5s; }
+.mirror-reveal > *:nth-child(4) { animation-delay: 0.65s; }
+.mirror-reveal > *:nth-child(5) { animation-delay: 0.75s; }
+.mirror-reveal > *:nth-child(6) { animation-delay: 0.85s; }
+
+/* ─── Responsive: phone on desktop ────────────────────────── */
+@media (min-width: 440px) {
+  body { display: flex; align-items: flex-start; justify-content: center; min-height: 100vh; padding: 24px 0; }
+  #app { min-height: min(812px, calc(100vh - 48px)); border-radius: 44px; box-shadow: 0 32px 80px rgba(0,0,0,0.25); }
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ── INTRO ───────────────────────────────────────────── -->
+  <div class="screen active" id="screen-intro">
+    <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 32px; text-align:center;">
+      <div class="intro-orblet"></div>
+      <h1 class="intro-title">Wabi Mirror</h1>
+      <p class="intro-subtitle">10 questions. A read that feels like it knows you.</p>
+      <button class="btn-primary" onclick="startQuiz()">Let's go →</button>
+    </div>
+    <div style="padding:0 32px 48px; text-align:center;">
+      <p style="font-size:13px; color:var(--text-muted); line-height:18px;">Takes about 2 minutes.<br>No account needed.</p>
+    </div>
+  </div>
+
+  <!-- ── QUESTION ────────────────────────────────────────── -->
+  <div class="screen" id="screen-question">
+    <div class="q-topbar">
+      <button class="btn-back" id="btn-back" onclick="goBack()">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M12.5 15L7.5 10L12.5 5" stroke="#0a0a0a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="progress-ring-wrap">
+        <svg class="progress-ring-svg" viewBox="0 0 68 68" width="68" height="68">
+          <circle class="progress-track" cx="34" cy="34" r="30"/>
+          <circle class="progress-fill" id="progress-circle" cx="34" cy="34" r="30"
+            stroke-dasharray="188.5" stroke-dashoffset="188.5"/>
+        </svg>
+        <div class="mini-orblet"></div>
+      </div>
+      <div class="q-topbar-right"></div>
+    </div>
+
+    <p class="q-question" id="q-text">Loading…</p>
+
+    <div class="options-grid" id="options-grid">
+      <!-- tiles injected by JS -->
+    </div>
+
+    <div class="q-bottom">
+      <div class="loading-dots" id="loading-dots" style="display:none;">
+        <span></span><span></span><span></span>
+      </div>
+      <button class="btn-results" id="btn-results" onclick="finishQuiz()">
+        See your mirror →
+      </button>
+    </div>
+  </div>
+
+  <!-- ── MIRROR ───────────────────────────────────────────── -->
+  <div class="screen" id="screen-mirror">
+    <div class="mirror-topbar">
+      <button class="btn-back-dark" onclick="showScreen('screen-question')">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M12.5 15L7.5 10L12.5 5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; align-items:center; overflow-y:auto; -webkit-overflow-scrolling:touch;" class="mirror-reveal">
+      <!-- Wabi Mark -->
+      <div class="wabi-mark" id="wabi-mark">
+        <div class="wabi-circle"><canvas id="c-energy" width="180" height="180"></canvas></div>
+        <div class="wabi-circle"><canvas id="c-identity" width="180" height="180"></canvas></div>
+        <div class="wabi-circle"><canvas id="c-rituals" width="180" height="180"></canvas></div>
+        <div class="wabi-circle"><canvas id="c-bonds" width="180" height="180"></canvas></div>
+        <div class="wabi-circle"><canvas id="c-aspirations" width="180" height="180"></canvas></div>
+      </div>
+
+      <p class="mirror-label">Your Mirror</p>
+      <p class="mirror-text" id="mirror-text">…</p>
+      <p class="mirror-user-num" id="mirror-num">#—</p>
+
+      <div class="mirror-actions">
+        <button class="btn-share" onclick="shareMirror()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 1L8 10M8 1L5 4M8 1L11 4M3 7v6a1 1 0 001 1h8a1 1 0 001-1V7" stroke="#0a0a0a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Share
+        </button>
+        <button class="btn-apps" onclick="showScreen('screen-apps')">
+          Your Apps →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── APPS ────────────────────────────────────────────── -->
+  <div class="screen" id="screen-apps">
+    <div class="apps-topbar">
+      <button class="btn-back-dark" onclick="showScreen('screen-mirror')">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M12.5 15L7.5 10L12.5 5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+    <p class="apps-title">Made for you</p>
+    <div class="apps-list" id="apps-list"></div>
+    <button class="apps-done-btn" id="apps-done-btn" onclick="restartQuiz()">Start over</button>
+  </div>
+
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────
+const MAX_Q = 10;
+const MIN_Q = 5;
+
+const state = {
+  history: [],
+  current: null,        // { question, options, icons }
+  cache: new Map(),     // historyKey → Promise<question>
+  isTransitioning: false,
+  mirrorData: null,
+};
+
+// ── Helpers ────────────────────────────────────────────────────────
+function historyKey(h) {
+  return JSON.stringify(h.map(e => e.a));
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ── Progress ring ──────────────────────────────────────────────────
+function updateProgress(n, max) {
+  const circle = document.getElementById('progress-circle');
+  const circumference = 188.5;
+  const progress = n / max;
+  circle.style.strokeDashoffset = circumference * (1 - progress);
+}
+
+// ── Fetch question ─────────────────────────────────────────────────
+async function fetchQuestion(history) {
+  const res = await fetch('/api/question', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ history }),
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+// ── Pre-generate next question for each possible answer ────────────
+function pregenerateNext(currentQuestion, currentHistory) {
+  if (currentHistory.length + 1 >= MAX_Q) return; // don't bother on last Q
+  currentQuestion.options.forEach(option => {
+    const hypo = [...currentHistory, { q: currentQuestion.question, a: option }];
+    const key = historyKey(hypo);
+    if (!state.cache.has(key)) {
+      state.cache.set(key, fetchQuestion(hypo));
+    }
+  });
+}
+
+// ── Render a question ──────────────────────────────────────────────
+function renderQuestion(q) {
+  state.current = q;
+  document.getElementById('q-text').textContent = q.question;
+
+  const grid = document.getElementById('options-grid');
+  grid.innerHTML = '';
+
+  q.options.forEach((opt, i) => {
+    const tile = document.createElement('button');
+    tile.className = 'option-tile enter';
+    tile.innerHTML = `
+      <img class="tile-icon" src="/icons/${q.icons[i]}" alt="" loading="lazy" onerror="this.src='/icons/star.png'">
+      <span class="tile-label">${opt}</span>`;
+    tile.addEventListener('click', () => onOptionTap(i));
+    grid.appendChild(tile);
+  });
+
+  // Trigger enter animation in next frame
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      grid.querySelectorAll('.option-tile').forEach((t, i) => {
+        setTimeout(() => t.classList.add('enter-active'), i * 60);
+        setTimeout(() => { t.classList.remove('enter'); t.classList.remove('enter-active'); }, i * 60 + 450);
+      });
+    });
+  });
+}
+
+// ── Handle option tap ──────────────────────────────────────────────
+async function onOptionTap(idx) {
+  if (state.isTransitioning) return;
+  state.isTransitioning = true;
+
+  const tiles = document.querySelectorAll('.option-tile');
+  const chosen = state.current.options[idx];
+
+  // Highlight selection
+  tiles[idx].classList.add('selected');
+  tiles.forEach((t, i) => { if (i !== idx) t.classList.add('fading'); });
+
+  await sleep(320);
+
+  // Save to history
+  state.history.push({ q: state.current.question, a: chosen });
+
+  const qNum = state.history.length;
+  updateProgress(qNum, MAX_Q);
+
+  // Show "See results" after MIN_Q
+  if (qNum >= MIN_Q) {
+    document.getElementById('btn-results').classList.add('visible');
+  }
+
+  // Exit all tiles
+  tiles.forEach(t => t.classList.add('exit'));
+  await sleep(300);
+
+  // If we've hit max, trigger mirror
+  if (qNum >= MAX_Q) {
+    state.isTransitioning = false;
+    finishQuiz();
+    return;
+  }
+
+  // Get next question (from cache or fresh fetch)
+  showLoading(true);
+  const key = historyKey(state.history);
+  let nextQ;
+  try {
+    nextQ = state.cache.has(key)
+      ? await state.cache.get(key)
+      : await fetchQuestion(state.history);
+  } catch (e) {
+    console.error(e);
+    showLoading(false);
+    state.isTransitioning = false;
+    return;
+  }
+
+  showLoading(false);
+  renderQuestion(nextQ);
+  pregenerateNext(nextQ, state.history);
+  state.isTransitioning = false;
+}
+
+function showLoading(show) {
+  document.getElementById('loading-dots').style.display = show ? 'flex' : 'none';
+}
+
+// ── Quiz start / back ──────────────────────────────────────────────
+async function startQuiz() {
+  showScreen('screen-question');
+  updateProgress(0, MAX_Q);
+  showLoading(true);
+
+  try {
+    const q = await fetchQuestion([]);
+    showLoading(false);
+    renderQuestion(q);
+    pregenerateNext(q, []);
+  } catch (e) {
+    console.error(e);
+    showLoading(false);
+    document.getElementById('q-text').textContent = 'Something went wrong. Is the server running?';
+  }
+}
+
+function goBack() {
+  if (state.isTransitioning) return;
+  if (state.history.length === 0) {
+    showScreen('screen-intro');
+    return;
+  }
+  // Simple back: pop last history entry and re-render — we don't cache backwards
+  state.history.pop();
+  updateProgress(state.history.length, MAX_Q);
+  if (state.history.length < MIN_Q) {
+    document.getElementById('btn-results').classList.remove('visible');
+  }
+  // Would need to re-generate current question; for prototype just go to intro
+  showScreen('screen-intro');
+}
+
+// ── Mirror reveal ──────────────────────────────────────────────────
+async function finishQuiz() {
+  showScreen('screen-mirror');
+  document.getElementById('mirror-text').textContent = 'Reading you…';
+  document.getElementById('mirror-num').textContent = '';
+
+  // Draw placeholder circles while loading
+  const dims = { energy: 0.5, identity: 0.5, rituals: 0.5, bonds: 0.5, aspirations: 0.5 };
+  drawWabiMark(dims);
+
+  try {
+    const data = await fetch('/api/mirror', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ history: state.history }),
+    }).then(r => r.json());
+
+    state.mirrorData = data;
+    document.getElementById('mirror-text').textContent = data.mirror;
+    document.getElementById('mirror-num').textContent = '#' + randomUserNum();
+    drawWabiMark(data.dimensions || dims);
+
+    // Populate apps screen
+    buildAppsScreen(data.apps || []);
+  } catch (e) {
+    console.error(e);
+    document.getElementById('mirror-text').textContent = "Couldn't load your mirror. Try again.";
+  }
+}
+
+function randomUserNum() {
+  return (Math.floor(Math.random() * 8000) + 1200).toLocaleString();
+}
+
+// ── Apps screen ────────────────────────────────────────────────────
+function buildAppsScreen(apps) {
+  const list = document.getElementById('apps-list');
+  list.innerHTML = '';
+  apps.forEach((app, i) => {
+    const card = document.createElement('div');
+    card.className = 'app-card';
+    card.innerHTML = `
+      <div class="app-card-num">${i + 1}</div>
+      <div class="app-card-content">
+        <div class="app-card-name">${app.name}</div>
+        <div class="app-card-reason">${app.reason}</div>
+      </div>`;
+    list.appendChild(card);
+    setTimeout(() => card.classList.add('visible'), i * 120 + 100);
+  });
+  setTimeout(() => {
+    document.getElementById('apps-done-btn').classList.add('visible');
+  }, apps.length * 120 + 400);
+}
+
+function restartQuiz() {
+  state.history = [];
+  state.cache.clear();
+  state.current = null;
+  state.mirrorData = null;
+  document.getElementById('btn-results').classList.remove('visible');
+  updateProgress(0, MAX_Q);
+  showScreen('screen-intro');
+}
+
+// ── Share ──────────────────────────────────────────────────────────
+async function shareMirror() {
+  const text = state.mirrorData?.mirror || 'Wabi Mirror';
+  if (navigator.share) {
+    try {
+      await navigator.share({ text: text + '\n\nDiscover yours at wabi.app' });
+    } catch (_) {}
+  } else {
+    await navigator.clipboard.writeText(text);
+    alert('Copied to clipboard!');
+  }
+}
+
+// ── Wabi Mark generative art ───────────────────────────────────────
+const PALETTES = {
+  energy:      { bg1: '#FF6B35', bg2: '#C1390F', acc: '#FFD166', specular: 'rgba(255,255,200,0.4)' },
+  identity:    { bg1: '#7B4FD9', bg2: '#3D1A8A', acc: '#C084FC', specular: 'rgba(220,200,255,0.4)' },
+  rituals:     { bg1: '#2EC4B6', bg2: '#0D7A72', acc: '#A3F4EF', specular: 'rgba(200,255,250,0.4)' },
+  bonds:       { bg1: '#F72585', bg2: '#8A0047', acc: '#FFAAD4', specular: 'rgba(255,200,230,0.4)' },
+  aspirations: { bg1: '#F9C74F', bg2: '#B07C00', acc: '#FFEFB0', specular: 'rgba(255,255,200,0.5)' },
+};
+
+function seededRng(seed) {
+  let s = Math.abs(Math.round(seed * 1e6)) || 12345;
+  return () => {
+    s = (s * 16807 + 0) % 2147483647;
+    return (s - 1) / 2147483646;
+  };
+}
+
+function drawCircle(canvas, score, palette, seedVal) {
+  const ctx = canvas.getContext('2d');
+  const size = canvas.width;
+  const c = size / 2;
+  const rng = seededRng(seedVal);
+
+  ctx.clearRect(0, 0, size, size);
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(c, c, c - 1, 0, Math.PI * 2);
+  ctx.clip();
+
+  // Background gradient
+  const bg = ctx.createRadialGradient(c * 0.7, c * 0.6, 0, c, c, c * 1.3);
+  bg.addColorStop(0, palette.bg1);
+  bg.addColorStop(1, palette.bg2);
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, size, size);
+
+  // Organic blobs based on score
+  const blobCount = 2 + Math.round(score * 3);
+  for (let i = 0; i < blobCount; i++) {
+    const bx = size * (0.15 + rng() * 0.7);
+    const by = size * (0.15 + rng() * 0.7);
+    const br = size * (0.12 + rng() * 0.22 * score + 0.08);
+    const grad = ctx.createRadialGradient(bx, by, 0, bx, by, br);
+    const alpha = Math.round((0.4 + rng() * 0.4) * 255).toString(16).padStart(2, '0');
+    grad.addColorStop(0, palette.acc + alpha);
+    grad.addColorStop(1, palette.acc + '00');
+    ctx.beginPath();
+    ctx.arc(bx, by, br, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+  }
+
+  // Specular highlight
+  const spec = ctx.createRadialGradient(c * 0.55, c * 0.4, 0, c * 0.55, c * 0.4, c * 0.85);
+  spec.addColorStop(0, palette.specular);
+  spec.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = spec;
+  ctx.fillRect(0, 0, size, size);
+
+  // Vignette
+  const vig = ctx.createRadialGradient(c, c, c * 0.4, c, c, c);
+  vig.addColorStop(0, 'rgba(0,0,0,0)');
+  vig.addColorStop(1, 'rgba(0,0,0,0.35)');
+  ctx.fillStyle = vig;
+  ctx.fillRect(0, 0, size, size);
+
+  ctx.restore();
+}
+
+function drawWabiMark(dimensions) {
+  const dims = ['energy', 'identity', 'rituals', 'bonds', 'aspirations'];
+  dims.forEach((dim, i) => {
+    const canvas = document.getElementById('c-' + dim);
+    if (!canvas) return;
+    drawCircle(canvas, dimensions[dim] ?? 0.5, PALETTES[dim], (dimensions[dim] ?? 0.5) + i);
+  });
+}
+</script>
+</body>
+</html>

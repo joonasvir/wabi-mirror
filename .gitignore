@@ -1,0 +1,6 @@
+node_modules/
+.env
+3d icons/images/
+# Keep fonts in public/ but ignore root copies
+/Selecta-Medium.otf
+/Selecta-Regular.otf
