@@ -4,3 +4,4 @@ node_modules/
 # Keep fonts in public/ but ignore root copies
 /Selecta-Medium.otf
 /Selecta-Regular.otf
+.vercel

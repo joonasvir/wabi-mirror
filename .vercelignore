@@ -1,0 +1,5 @@
+node_modules/
+3d icons/images/
+server.js
+.env
+.claude/

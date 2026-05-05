@@ -53,8 +53,8 @@ function findIcon(query) {
 
 // Serve icons and fonts statically
 app.use('/icons', express.static(join(__dirname, '3d icons/images')));
-app.use('/fonts', express.static(__dirname, { index: false }));
-app.use(express.static(join(__dirname, 'public')));
+app.use('/fonts', express.static(join(__dirname, 'fonts')));
+app.use(express.static(__dirname));
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
