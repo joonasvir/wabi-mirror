@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "framework": null,
   "functions": {
     "api/question.js": { "maxDuration": 30 },
     "api/mirror.js": { "maxDuration": 30 }

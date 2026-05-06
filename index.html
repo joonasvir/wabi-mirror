@@ -19,7 +19,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #f4f4f4;
+  --bg: #ffffff;
   --white: #ffffff;
   --black: #090909;
   --text-primary: #0a0a0a;
@@ -47,6 +47,28 @@ html, body {
   background: var(--bg);
   overflow: hidden;
 }
+
+/* ─── iOS status chrome ─────────────────────────────────────── */
+.ios-chrome {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 47px;
+  padding: 14px 28px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 30;
+  pointer-events: none;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.2px;
+}
+.ios-chrome.dark { color: white; }
+.ios-chrome .ios-icons { display: flex; gap: 6px; align-items: center; opacity: 0.95; }
+.ios-chrome svg path,
+.ios-chrome svg rect { fill: currentColor; }
+.ios-chrome svg.stroke path { stroke: currentColor; fill: none; }
 
 /* ─── Screens ──────────────────────────────────────────────── */
 .screen {
@@ -84,8 +106,8 @@ html, body {
 }
 
 .intro-orblet {
-  width: 120px;
-  height: 120px;
+  width: 96px;
+  height: 96px;
   border-radius: 50%;
   background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.9), rgba(200,200,200,0.3));
   backdrop-filter: blur(20px);
@@ -120,33 +142,33 @@ html, body {
 }
 
 .intro-title {
-  font-size: 32px;
+  font-size: 26px;
   font-weight: 500;
   color: var(--text-primary);
-  letter-spacing: -0.5px;
-  margin-bottom: 12px;
+  letter-spacing: -0.4px;
+  margin-bottom: 10px;
 }
 .intro-subtitle {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   color: var(--text-secondary);
   text-align: center;
-  max-width: 260px;
-  line-height: 22px;
-  margin-bottom: 56px;
+  max-width: 240px;
+  line-height: 20px;
+  margin-bottom: 44px;
 }
 
 .btn-primary {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 56px;
-  padding: 0 48px;
+  height: 48px;
+  padding: 0 40px;
   border-radius: 999px;
   background: var(--text-primary);
   color: white;
   font-family: var(--font);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   border: none;
   cursor: pointer;
@@ -163,14 +185,15 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 16px 0;
-  height: 72px;
+  padding: 12px 16px 0;
+  height: 64px;
+  margin-top: 47px;
   flex-shrink: 0;
 }
 
 .btn-back {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: none;
   background: rgba(255,255,255,0.85);
@@ -185,11 +208,11 @@ html, body {
 }
 .btn-back:active { transform: scale(0.92); }
 
-/* Progress ring */
+/* Progress ring (matches back button size: 40px) */
 .progress-ring-wrap {
   position: relative;
-  width: 68px;
-  height: 68px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -202,14 +225,18 @@ html, body {
 .progress-track {
   fill: none;
   stroke: rgba(0,0,0,0.08);
-  stroke-width: 2.5;
+  stroke-width: 2;
 }
-.progress-fill {
-  fill: none;
-  stroke: var(--text-primary);
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  transition: stroke-dashoffset 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+.progress-metal {
+  position: absolute;
+  inset: 0;
+  width: 40px;
+  height: 40px;
+  pointer-events: none;
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+          mask-size: 100% 100%;
 }
 
 .mini-orblet {
@@ -239,38 +266,56 @@ html, body {
 
 /* Spacer on right to keep ring centered */
 .q-topbar-right {
-  width: 44px;
+  width: 40px;
+}
+
+.q-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-bottom: 32px;
 }
 
 .q-question {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 500;
   color: var(--text-primary);
   text-align: center;
-  line-height: 30px;
-  padding: 24px 40px 28px;
+  line-height: 26px;
+  padding: 16px 36px 20px;
   letter-spacing: -0.3px;
+  /* Reserve room for up to 2 lines so single-line questions
+     don't push the tiles around. */
+  min-height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* 2×2 tile grid */
 .options-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  align-content: start;
   gap: 10px;
   padding: 0 10px;
-  flex: 1;
+  /* Reserve the 2×2 square footprint at the design width (393px),
+     so the question/header position stays put when tiles are absent. */
+  min-height: 374px;
 }
 
 .option-tile {
+  aspect-ratio: 1 / 1;
   background: var(--white);
   border-radius: var(--radius-tile);
   box-shadow: var(--tile-shadow), var(--tile-inner);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  padding: 18px 12px 16px;
-  gap: 20px;
+  justify-content: center;
+  padding: 14px 12px 14px;
+  gap: 10px;
   cursor: pointer;
   border: none;
   font-family: var(--font);
@@ -289,8 +334,8 @@ html, body {
 }
 
 .option-tile .tile-icon {
-  width: 100px;
-  height: 100px;
+  width: 60px;
+  height: 60px;
   object-fit: contain;
   display: block;
   flex-shrink: 0;
@@ -298,11 +343,12 @@ html, body {
 }
 
 .option-tile .tile-label {
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--text-primary);
   text-align: center;
-  line-height: 18px;
+  line-height: 17px;
+  letter-spacing: -0.1px;
 }
 
 /* Selection states */
@@ -340,13 +386,17 @@ html, body {
 .option-tile:nth-child(3) { transition-delay: 0.1s; }
 .option-tile:nth-child(4) { transition-delay: 0.15s; }
 
-/* Bottom area */
+/* Bottom area — fixed height so question/tiles don't shift
+   when the loading dots or "See your mirror" button toggle. */
 .q-bottom {
-  padding: 20px 16px 36px;
+  padding: 12px 16px 28px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  gap: 8px;
+  height: 92px;
+  flex-shrink: 0;
 }
 
 .btn-results {
@@ -369,13 +419,113 @@ html, body {
 }
 .btn-results:hover { color: var(--text-secondary); }
 
+/* ─── Completion ritual ─────────────────────────────────────── */
+.completion-state {
+  flex: 1;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding-bottom: 64px;
+}
+#screen-question.completing .q-content { display: none; }
+#screen-question.completing .completion-state { display: flex; }
+
+.completion-orb {
+  position: relative;
+  width: 132px;
+  height: 132px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 50%;
+  -webkit-tap-highlight-color: transparent;
+  animation: orbAppear 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  transition: transform 0.18s ease;
+  overflow: hidden;
+}
+.completion-orb:active { transform: scale(0.96); }
+.completion-orb.filled { animation: orbFilledFloat 4s ease-in-out infinite; cursor: default; }
+
+@keyframes orbAppear {
+  from { opacity: 0; transform: scale(0.4); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes orbFilledFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+
+.completion-orb .completion-track {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.5s ease;
+  filter: drop-shadow(0 14px 30px rgba(0,0,0,0.10));
+}
+.completion-orb.filled .completion-track { opacity: 0; }
+
+.completion-orb .orb-video {
+  position: absolute;
+  /* Scale up the source so the orb fills the visible circle and the
+     white video margins get cropped out. The 3D asset has the orb
+     centred at ~65% of the frame, so a 1.55× zoom lands it edge-to-edge. */
+  top: 50%;
+  left: 50%;
+  width: 155%;
+  height: 155%;
+  transform: translate(-50%, -50%) scale(0.85);
+  transform-origin: center center;
+  border-radius: 50%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.6s ease, transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+}
+.completion-orb.filled .orb-video {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.completion-orb.filled {
+  box-shadow:
+    0 18px 36px rgba(0,0,0,0.14),
+    0 6px 14px rgba(0,0,0,0.08);
+}
+
+.completion-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  animation: completionPulse 2.4s ease-in-out infinite;
+  transition: opacity 0.35s ease;
+}
+#screen-question.completing .completion-orb.filled ~ .completion-label {
+  opacity: 0;
+  animation: none;
+}
+
+@keyframes completionPulse {
+  0%, 100% { opacity: 0.45; }
+  50%      { opacity: 1; }
+}
+
+/* During completion, the topbar progress ring fades — the centred orb owns
+   the moment. */
+#screen-question.completing .progress-ring-wrap { opacity: 0; transition: opacity 0.5s ease; }
+#screen-question.completing .btn-back { opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+
 /* Loading dots */
 .loading-dots {
   display: flex;
   gap: 6px;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 0;
 }
 .loading-dots span {
   width: 7px;
@@ -404,14 +554,15 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 16px 0;
-  height: 64px;
+  padding: 12px 16px 0;
+  height: 56px;
+  margin-top: 47px;
   flex-shrink: 0;
 }
 
 .btn-back-dark {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   border: none;
   background: rgba(255,255,255,0.1);
@@ -427,17 +578,17 @@ html, body {
 
 /* 5-circle Wabi Mark */
 .wabi-mark {
-  margin: 24px 0 28px;
+  margin: 16px 0 22px;
   display: grid;
-  grid-template-columns: 90px 90px 90px;
-  grid-template-rows: 90px 90px;
+  grid-template-columns: 76px 76px 76px;
+  grid-template-rows: 76px 76px;
   gap: 8px;
   justify-content: center;
 }
 
 .wabi-circle {
-  width: 90px;
-  height: 90px;
+  width: 76px;
+  height: 76px;
   border-radius: 50%;
   overflow: hidden;
   box-shadow: 0 8px 32px rgba(0,0,0,0.4);
@@ -457,7 +608,7 @@ html, body {
 */
 .wabi-circle:nth-child(1) { grid-column: 1; grid-row: 1; }
 .wabi-circle:nth-child(2) { grid-column: 3; grid-row: 1; }
-.wabi-circle:nth-child(3) { grid-column: 2; grid-row: 1; margin-top: 40px; } /* center-top offset */
+.wabi-circle:nth-child(3) { grid-column: 2; grid-row: 1; margin-top: 34px; } /* center-top offset */
 .wabi-circle:nth-child(4) { grid-column: 1; grid-row: 2; }
 .wabi-circle:nth-child(5) { grid-column: 3; grid-row: 2; }
 
@@ -471,14 +622,14 @@ html, body {
 }
 
 .mirror-text {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 400;
   color: rgba(255,255,255,0.92);
-  line-height: 27px;
+  line-height: 22px;
   text-align: center;
-  padding: 0 32px;
+  padding: 0 28px;
   letter-spacing: -0.1px;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
 .mirror-user-num {
@@ -497,12 +648,12 @@ html, body {
 
 .btn-share {
   flex: 1;
-  height: 52px;
+  height: 46px;
   border-radius: 999px;
   background: white;
   color: #0a0a0a;
   font-family: var(--font);
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 500;
   border: none;
   cursor: pointer;
@@ -516,12 +667,12 @@ html, body {
 
 .btn-apps {
   flex: 1;
-  height: 52px;
+  height: 46px;
   border-radius: 999px;
   background: rgba(255,255,255,0.1);
   color: rgba(255,255,255,0.85);
   font-family: var(--font);
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 500;
   border: 1px solid rgba(255,255,255,0.15);
   cursor: pointer;
@@ -542,8 +693,9 @@ html, body {
   width: 100%;
   display: flex;
   align-items: center;
-  padding: 8px 16px 0;
-  height: 64px;
+  padding: 12px 16px 0;
+  height: 56px;
+  margin-top: 47px;
   flex-shrink: 0;
 }
 
@@ -602,17 +754,17 @@ html, body {
 .app-card-content { flex: 1; }
 
 .app-card-name {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   color: rgba(255,255,255,0.92);
   margin-bottom: 4px;
 }
 
 .app-card-reason {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 400;
   color: rgba(255,255,255,0.45);
-  line-height: 19px;
+  line-height: 17px;
 }
 
 .apps-done-btn {
@@ -648,15 +800,142 @@ html, body {
 .mirror-reveal > *:nth-child(5) { animation-delay: 0.75s; }
 .mirror-reveal > *:nth-child(6) { animation-delay: 0.85s; }
 
-/* ─── Responsive: phone on desktop ────────────────────────── */
-@media (min-width: 440px) {
+/* ─── Responsive: phone frame on desktop ───────────────────── */
+@media (min-width: 880px) {
+  html, body { background: #d9d9d9; }
+  body {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; padding: 32px;
+    gap: 32px;
+  }
+  #app {
+    width: 393px;
+    height: 852px;
+    min-height: 852px;
+    border-radius: 56px;
+    overflow: hidden;
+    position: relative;
+    box-shadow:
+      0 0 0 12px #0a0a0a,
+      0 0 0 13px #2a2a2a,
+      0 50px 120px rgba(0,0,0,0.35),
+      0 20px 40px rgba(0,0,0,0.2);
+  }
+  /* Notch */
+  #app::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 124px; height: 36px;
+    background: #0a0a0a;
+    border-radius: 999px;
+    z-index: 50;
+    pointer-events: none;
+  }
+  #sidebar { display: flex !important; }
+}
+@media (max-width: 879px) and (min-width: 440px) {
   body { display: flex; align-items: flex-start; justify-content: center; min-height: 100vh; padding: 24px 0; }
   #app { min-height: min(812px, calc(100vh - 48px)); border-radius: 44px; box-shadow: 0 32px 80px rgba(0,0,0,0.25); }
 }
+
+/* ─── Sidebar (dev controls) ────────────────────────────────── */
+#sidebar {
+  display: none;
+  flex-direction: column;
+  gap: 18px;
+  width: 280px;
+  max-height: 852px;
+  overflow-y: auto;
+  background: white;
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.12);
+  font-family: var(--font);
+  font-size: 12px;
+  color: var(--text-primary);
+}
+.sidebar-h1 {
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  letter-spacing: -0.1px;
+}
+.sidebar-sub {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 15px;
+  margin-bottom: 4px;
+}
+.sidebar-section { padding-bottom: 16px; border-bottom: 1px solid #ececec; }
+.sidebar-section:last-child { border-bottom: none; padding-bottom: 0; }
+.sidebar-label {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+.sidebar-radio { display: flex; flex-direction: column; gap: 8px; }
+.sidebar-radio label {
+  display: flex; gap: 8px;
+  cursor: pointer; align-items: flex-start;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #f7f7f7;
+  transition: background 0.15s ease;
+  line-height: 16px;
+}
+.sidebar-radio label:hover { background: #efefef; }
+.sidebar-radio input { margin-top: 2px; accent-color: var(--text-primary); }
+.sidebar-radio strong { font-weight: 500; font-size: 12px; }
+.sidebar-radio span { color: var(--text-secondary); font-size: 11px; line-height: 14px; display: block; margin-top: 2px; }
+.sidebar-button {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--text-primary);
+  color: white;
+  border: none;
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.sidebar-button:active { opacity: 0.85; }
 </style>
 </head>
 <body>
 <div id="app">
+
+  <!-- ── iOS chrome (status bar) ─────────────────────────── -->
+  <div class="ios-chrome" id="ios-chrome">
+    <div class="ios-time" id="ios-time">9:41</div>
+    <div class="ios-icons">
+      <!-- Signal -->
+      <svg width="17" height="11" viewBox="0 0 17 11" fill="none" aria-hidden="true">
+        <rect x="0" y="7" width="3" height="4" rx="0.5"/>
+        <rect x="4.5" y="5" width="3" height="6" rx="0.5"/>
+        <rect x="9" y="2.5" width="3" height="8.5" rx="0.5"/>
+        <rect x="13.5" y="0" width="3" height="11" rx="0.5"/>
+      </svg>
+      <!-- WiFi -->
+      <svg width="15" height="11" viewBox="0 0 15 11" fill="none" aria-hidden="true">
+        <path d="M7.5 10.2 a1.4 1.4 0 1 0 0-2.8 a1.4 1.4 0 1 0 0 2.8z"/>
+        <path d="M2.4 5.7 a 7.2 7.2 0 0 1 10.2 0" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+        <path d="M4.6 7.9 a 4.1 4.1 0 0 1 5.8 0" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+      </svg>
+      <!-- Battery -->
+      <svg width="27" height="12" viewBox="0 0 27 12" fill="none" aria-hidden="true">
+        <rect x="0.5" y="0.5" width="22" height="11" rx="3" stroke="currentColor" fill="none" opacity="0.4"/>
+        <rect x="2" y="2" width="19" height="8" rx="1.6"/>
+        <rect x="23.5" y="3.5" width="2" height="5" rx="1" opacity="0.5"/>
+      </svg>
+    </div>
+  </div>
 
   <!-- ── INTRO ───────────────────────────────────────────── -->
   <div class="screen active" id="screen-intro">
@@ -680,29 +959,42 @@ html, body {
         </svg>
       </button>
       <div class="progress-ring-wrap">
-        <svg class="progress-ring-svg" viewBox="0 0 68 68" width="68" height="68">
-          <circle class="progress-track" cx="34" cy="34" r="30"/>
-          <circle class="progress-fill" id="progress-circle" cx="34" cy="34" r="30"
-            stroke-dasharray="188.5" stroke-dashoffset="188.5"/>
+        <svg class="progress-ring-svg" viewBox="0 0 40 40" width="40" height="40">
+          <circle class="progress-track" cx="20" cy="20" r="18"/>
         </svg>
-        <div class="mini-orblet"></div>
+        <canvas class="progress-metal" id="progress-metal" width="40" height="40"></canvas>
       </div>
       <div class="q-topbar-right"></div>
     </div>
 
-    <p class="q-question" id="q-text">Loading…</p>
+    <div class="q-content" id="q-content">
+      <p class="q-question" id="q-text">Loading…</p>
 
-    <div class="options-grid" id="options-grid">
-      <!-- tiles injected by JS -->
+      <div class="options-grid" id="options-grid">
+        <!-- tiles injected by JS -->
+      </div>
+
+      <div class="q-bottom">
+        <div class="loading-dots" id="loading-dots" style="display:none;">
+          <span></span><span></span><span></span>
+        </div>
+        <button class="btn-results" id="btn-results" onclick="startCompletion()">
+          See your mirror →
+        </button>
+      </div>
     </div>
 
-    <div class="q-bottom">
-      <div class="loading-dots" id="loading-dots" style="display:none;">
-        <span></span><span></span><span></span>
-      </div>
-      <button class="btn-results" id="btn-results" onclick="finishQuiz()">
-        See your mirror →
+    <!-- Completion ritual: ring slides to centre, user taps to reveal -->
+    <div class="completion-state" id="completion-state">
+      <button class="completion-orb" id="completion-orb" onclick="onOrbTap()" aria-label="Reveal mirror">
+        <svg class="completion-track" viewBox="0 0 160 160" width="160" height="160" aria-hidden="true">
+          <circle cx="80" cy="80" r="76" fill="none" stroke="rgba(0,0,0,0.10)" stroke-width="2.5"/>
+        </svg>
+        <video class="orb-video" id="orb-video" muted playsinline preload="auto" loop aria-hidden="true">
+          <source src="/assets/orb.mp4" type="video/mp4">
+        </video>
       </button>
+      <p class="completion-label" id="completion-label">Tap to reveal</p>
     </div>
   </div>
 
@@ -760,6 +1052,36 @@ html, body {
 
 </div>
 
+<!-- ── DEV SIDEBAR (desktop only) ────────────────────────────── -->
+<aside id="sidebar">
+  <div>
+    <div class="sidebar-h1">Wabi controls</div>
+    <div class="sidebar-sub">Tweak the prompt, restart the quiz.</div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Question prompt</div>
+    <div class="sidebar-radio" id="prompt-question-radio">
+      <label><input type="radio" name="prompt-q" value="default"><div><strong>Original</strong><span>Warm, exploratory, multi-dimensional.</span></div></label>
+      <label><input type="radio" name="prompt-q" value="concise" checked><div><strong>Concise</strong><span>Tight & specific. Less woo, fewer words.</span></div></label>
+      <label><input type="radio" name="prompt-q" value="wild"><div><strong>Off-the-wall</strong><span>Concise + occasional weird/playful question.</span></div></label>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Mirror prompt</div>
+    <div class="sidebar-radio" id="prompt-mirror-radio">
+      <label><input type="radio" name="prompt-m" value="default"><div><strong>Original</strong><span>Full, expressive read.</span></div></label>
+      <label><input type="radio" name="prompt-m" value="concise" checked><div><strong>Concise</strong><span>1-2 lines. Sharp. Specific.</span></div></label>
+      <label><input type="radio" name="prompt-m" value="wild"><div><strong>Off-the-wall</strong><span>Concise + a surprising observation.</span></div></label>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <button class="sidebar-button" id="btn-restart">Restart quiz</button>
+  </div>
+</aside>
+
 <script>
 // ── State ──────────────────────────────────────────────────────────
 const MAX_Q = 10;
@@ -783,14 +1105,112 @@ function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  // iOS chrome flips colour on dark screens
+  setChromeTheme(id === 'screen-mirror' || id === 'screen-apps');
 }
 
-// ── Progress ring ──────────────────────────────────────────────────
+// ── Progress ring (metal-fx liquid metal) ──────────────────────────
+// Canvas is 40×40. We carve out a thin ring at r=18 with 3px stroke.
+const PROGRESS_VIEW = 40;
+const PROGRESS_CENTER = 20;
+const PROGRESS_R = 18;
+const PROGRESS_STROKE = 3;
+const PROGRESS_CIRC = 2 * Math.PI * PROGRESS_R;
+let _progressTarget = 0;
+let _progressCurrent = 0;
+let _progressRAF = null;
+
+function _progressMaskUrl(p) {
+  const offset = PROGRESS_CIRC * (1 - Math.max(0, Math.min(1, p)));
+  // White stroke = visible mask; rotated -90° so progress starts at top.
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${PROGRESS_VIEW} ${PROGRESS_VIEW}'><circle cx='${PROGRESS_CENTER}' cy='${PROGRESS_CENTER}' r='${PROGRESS_R}' fill='none' stroke='white' stroke-width='${PROGRESS_STROKE}' stroke-linecap='round' stroke-dasharray='${PROGRESS_CIRC.toFixed(3)}' stroke-dashoffset='${offset.toFixed(3)}' transform='rotate(-90 ${PROGRESS_CENTER} ${PROGRESS_CENTER})'/></svg>`;
+  return `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}")`;
+}
+
+function _applyProgressMask(p) {
+  const canvas = document.getElementById('progress-metal');
+  if (!canvas) return;
+  const url = _progressMaskUrl(p);
+  canvas.style.maskImage = url;
+  canvas.style.webkitMaskImage = url;
+}
+
 function updateProgress(n, max) {
-  const circle = document.getElementById('progress-circle');
-  const circumference = 188.5;
-  const progress = n / max;
-  circle.style.strokeDashoffset = circumference * (1 - progress);
+  _progressTarget = n / max;
+  if (_progressRAF) cancelAnimationFrame(_progressRAF);
+  const start = _progressCurrent;
+  const startTime = performance.now();
+  const dur = 500;
+  const tick = (t) => {
+    const k = Math.min(1, (t - startTime) / dur);
+    const eased = 1 - Math.pow(1 - k, 3);
+    _progressCurrent = start + (_progressTarget - start) * eased;
+    _applyProgressMask(_progressCurrent);
+    if (k < 1) _progressRAF = requestAnimationFrame(tick);
+    else _progressRAF = null;
+  };
+  _progressRAF = requestAnimationFrame(tick);
+}
+
+// Initialise the metal-fx shader on the progress canvas.
+(async () => {
+  try {
+    const { createInstance, setSharedPreset } = await import('https://esm.sh/metal-fx@0.2.3');
+    setSharedPreset('chromatic', 'dark');
+    const canvas = document.getElementById('progress-metal');
+    if (!canvas) return;
+    createInstance({
+      hostCanvas: canvas,
+      cssWidth: PROGRESS_VIEW,
+      cssHeight: PROGRESS_VIEW,
+      cornerRadius: PROGRESS_VIEW / 2,
+      kind: 'circle',
+      ringCssPx: PROGRESS_STROKE,
+    });
+    _applyProgressMask(_progressCurrent);
+  } catch (err) {
+    console.error('metal-fx init failed:', err);
+  }
+})();
+
+// ── Sidebar / prompt-version state ─────────────────────────────────
+function getPromptVersion(kind) {
+  const key = kind === 'mirror' ? 'wabi-prompt-mirror' : 'wabi-prompt-question';
+  return localStorage.getItem(key) || 'concise';
+}
+function setPromptVersion(kind, value) {
+  const key = kind === 'mirror' ? 'wabi-prompt-mirror' : 'wabi-prompt-question';
+  localStorage.setItem(key, value);
+}
+function initSidebar() {
+  const qVal = getPromptVersion('question');
+  const mVal = getPromptVersion('mirror');
+  document.querySelectorAll('input[name="prompt-q"]').forEach(r => {
+    r.checked = (r.value === qVal);
+    r.addEventListener('change', () => setPromptVersion('question', r.value));
+  });
+  document.querySelectorAll('input[name="prompt-m"]').forEach(r => {
+    r.checked = (r.value === mVal);
+    r.addEventListener('change', () => setPromptVersion('mirror', r.value));
+  });
+  document.getElementById('btn-restart')?.addEventListener('click', restartQuiz);
+}
+
+// ── iOS clock — live time ──────────────────────────────────────────
+function updateClock() {
+  const el = document.getElementById('ios-time');
+  if (!el) return;
+  const d = new Date();
+  let h = d.getHours();
+  const m = d.getMinutes().toString().padStart(2, '0');
+  if (h === 0) h = 12;
+  else if (h > 12) h -= 12;
+  el.textContent = `${h}:${m}`;
+}
+
+// ── iOS chrome theme follows screen ─────────────────────────────────
+function setChromeTheme(dark) {
+  document.getElementById('ios-chrome')?.classList.toggle('dark', dark);
 }
 
 // ── Fetch question ─────────────────────────────────────────────────
@@ -798,7 +1218,7 @@ async function fetchQuestion(history) {
   const res = await fetch('/api/question', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ history }),
+    body: JSON.stringify({ history, version: getPromptVersion('question') }),
   });
   if (!res.ok) throw new Error(await res.text());
   return res.json();
@@ -874,10 +1294,10 @@ async function onOptionTap(idx) {
   tiles.forEach(t => t.classList.add('exit'));
   await sleep(300);
 
-  // If we've hit max, trigger mirror
+  // If we've hit max, kick off the completion ritual
   if (qNum >= MAX_Q) {
     state.isTransitioning = false;
-    finishQuiz();
+    startCompletion();
     return;
   }
 
@@ -904,6 +1324,7 @@ async function onOptionTap(idx) {
 
 function showLoading(show) {
   document.getElementById('loading-dots').style.display = show ? 'flex' : 'none';
+  document.getElementById('screen-question').classList.toggle('loading', show);
 }
 
 // ── Quiz start / back ──────────────────────────────────────────────
@@ -941,33 +1362,73 @@ function goBack() {
 }
 
 // ── Mirror reveal ──────────────────────────────────────────────────
-async function finishQuiz() {
+function fetchMirror() {
+  return fetch('/api/mirror', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ history: state.history, version: getPromptVersion('mirror') }),
+  }).then(r => r.ok ? r.json() : Promise.reject(new Error('mirror fetch failed')));
+}
+
+// ── Completion ritual ──────────────────────────────────────────────
+// 1. Slide ring to centre, kick off mirror request in background.
+// 2. User taps the orb → video plays inside it.
+// 3. Once both the video has played a beat AND the mirror data is ready,
+//    we transition to the mirror screen.
+function startCompletion() {
+  if (state.mirrorPromise) return; // already running
+  state.mirrorPromise = fetchMirror().catch(err => {
+    console.error(err);
+    return null;
+  });
+  document.getElementById('screen-question').classList.add('completing');
+  // Hint: warm up the video so the tap feels instant
+  try { document.getElementById('orb-video')?.load(); } catch {}
+}
+
+async function onOrbTap() {
+  const orb = document.getElementById('completion-orb');
+  if (!orb || orb.classList.contains('filled')) return;
+  orb.classList.add('filled');
+
+  // Play the orb video (muted autoplay is allowed even without gesture, but
+  // we wrap in try/catch in case the asset hasn't decoded yet).
+  const video = document.getElementById('orb-video');
+  if (video) {
+    try { video.currentTime = 0; await video.play(); } catch {}
+  }
+
+  // Hold the orb on screen for a beat AND wait for mirror data.
+  const data = await Promise.race([
+    state.mirrorPromise || Promise.resolve(null),
+    new Promise((_, rej) => setTimeout(() => rej('timeout'), 20000)),
+  ]).catch(() => null);
+
+  await sleep(1700); // give the orb fill animation time to feel intentional
+
+  showMirrorWithData(data);
+}
+
+function showMirrorWithData(data) {
   showScreen('screen-mirror');
-  document.getElementById('mirror-text').textContent = 'Reading you…';
-  document.getElementById('mirror-num').textContent = '';
-
-  // Draw placeholder circles while loading
   const dims = { energy: 0.5, identity: 0.5, rituals: 0.5, bonds: 0.5, aspirations: 0.5 };
-  drawWabiMark(dims);
 
-  try {
-    const data = await fetch('/api/mirror', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ history: state.history }),
-    }).then(r => r.json());
-
+  if (data) {
     state.mirrorData = data;
-    document.getElementById('mirror-text').textContent = data.mirror;
+    document.getElementById('mirror-text').textContent = data.mirror || '…';
     document.getElementById('mirror-num').textContent = '#' + randomUserNum();
     drawWabiMark(data.dimensions || dims);
-
-    // Populate apps screen
     buildAppsScreen(data.apps || []);
-  } catch (e) {
-    console.error(e);
+  } else {
     document.getElementById('mirror-text').textContent = "Couldn't load your mirror. Try again.";
+    document.getElementById('mirror-num').textContent = '';
+    drawWabiMark(dims);
   }
+
+  // Reset completion state for the next run
+  document.getElementById('screen-question').classList.remove('completing');
+  document.getElementById('completion-orb').classList.remove('filled');
+  state.mirrorPromise = null;
 }
 
 function randomUserNum() {
@@ -1000,7 +1461,10 @@ function restartQuiz() {
   state.cache.clear();
   state.current = null;
   state.mirrorData = null;
+  state.mirrorPromise = null;
   document.getElementById('btn-results').classList.remove('visible');
+  document.getElementById('screen-question').classList.remove('completing');
+  document.getElementById('completion-orb').classList.remove('filled');
   updateProgress(0, MAX_Q);
   showScreen('screen-intro');
 }
@@ -1095,6 +1559,11 @@ function drawWabiMark(dimensions) {
     drawCircle(canvas, dimensions[dim] ?? 0.5, PALETTES[dim], (dimensions[dim] ?? 0.5) + i);
   });
 }
+
+// ── Boot ───────────────────────────────────────────────────────────
+initSidebar();
+updateClock();
+setInterval(updateClock, 30 * 1000);
 </script>
 </body>
 </html>

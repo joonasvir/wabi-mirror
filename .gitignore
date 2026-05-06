@@ -5,3 +5,4 @@ node_modules/
 /Selecta-Medium.otf
 /Selecta-Regular.otf
 .vercel
+.env*.local
