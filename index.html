@@ -439,7 +439,7 @@ html, body {
   border: none;
   background: transparent;
   padding: 0;
-  cursor: pointer;
+  cursor: default;
   border-radius: 50%;
   -webkit-tap-highlight-color: transparent;
   /* Storyboard: orb starts as the small topbar ring (size 40, position 380px
@@ -1028,7 +1028,7 @@ html, body {
           <source src="/assets/orb.mp4" type="video/mp4">
         </video>
       </button>
-      <p class="completion-label" id="completion-label">Tap to reveal</p>
+      <p class="completion-label" id="completion-label">Reading you</p>
     </div>
   </div>
 
@@ -1295,13 +1295,14 @@ function previewOrb() {
   state.mirrorPromise = null;
   showScreen('screen-question');
   document.getElementById('btn-results').classList.remove('visible');
-  // Start the centre ring at 50% so the "click to complete" fill is visible.
+  // Start the centre ring at 50% so the fill animation is visible.
   setOrbProgress(0.5);
   document.getElementById('screen-question').classList.add('completing');
   const orb = document.getElementById('completion-orb');
   orb.classList.remove('filled');
   delete orb.dataset.filling;
   try { document.getElementById('orb-video')?.load(); } catch {}
+  setTimeout(() => onOrbTap(), 1100);
 }
 
 // ── iOS clock — live time ──────────────────────────────────────────
@@ -1489,12 +1490,13 @@ function startCompletion() {
     console.error(err);
     return null;
   });
-  // Centre orb starts at the same fill % as the topbar ring (handles early
-  // skips after Q5 — tap then completes the ring before the video reveals).
+  // Centre orb starts at the current fill % (handles early skips after Q5).
   setOrbProgress(state.history.length / MAX_Q);
   document.getElementById('screen-question').classList.add('completing');
-  // Hint: warm up the video so the tap feels instant
   try { document.getElementById('orb-video')?.load(); } catch {}
+  // Auto-advance: once the orb has slid into place, fill the ring and
+  // reveal the 3D asset without waiting for a tap.
+  setTimeout(() => onOrbTap(), 1100);
 }
 
 async function onOrbTap() {
@@ -1515,20 +1517,22 @@ async function onOrbTap() {
 
   // Preview mode: stay on this screen so the orb visuals can be iterated on.
   if (state.previewOrbMode) {
-    await sleep(3500);
+    await sleep(10000);
     orb.classList.remove('filled');
-    setOrbProgress(0.5); // back to a partial state for next preview tap
+    setOrbProgress(0.5);
     delete orb.dataset.filling;
+    // Re-trigger after a beat so the loop can play again
+    setTimeout(() => { if (state.previewOrbMode) onOrbTap(); }, 1200);
     return;
   }
 
-  // Hold the orb on screen for a beat AND wait for mirror data.
+  // Wait for mirror data + let the 3D asset play for ~10 seconds.
   const data = await Promise.race([
     state.mirrorPromise || Promise.resolve(null),
     new Promise((_, rej) => setTimeout(() => rej('timeout'), 20000)),
   ]).catch(() => null);
 
-  await sleep(1500); // give the orb fill animation time to feel intentional
+  await sleep(10000);
   delete orb.dataset.filling;
 
   showMirrorWithData(data);
