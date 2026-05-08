@@ -442,16 +442,21 @@ html, body {
   cursor: pointer;
   border-radius: 50%;
   -webkit-tap-highlight-color: transparent;
-  animation: orbAppear 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  /* Storyboard: orb starts as the small topbar ring (size 40, position 380px
+     above centre), then slides down and grows to its final centre position. */
+  animation: orbStoryboard 1100ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
   transition: transform 0.18s ease;
   overflow: hidden;
 }
 .completion-orb:active { transform: scale(0.96); }
 .completion-orb.filled { animation: orbFilledFloat 4s ease-in-out infinite; cursor: default; }
 
-@keyframes orbAppear {
-  from { opacity: 0; transform: scale(0.4); }
-  to   { opacity: 1; transform: scale(1); }
+@keyframes orbStoryboard {
+  /* Frames 1→2: appear at the topbar ring position, same 40px size */
+  0%   { opacity: 0; transform: translateY(-380px) scale(0.30); }
+  18%  { opacity: 1; transform: translateY(-380px) scale(0.30); }
+  /* Frames 2→3: travel down to centre, scaling up to full 132px */
+  100% { opacity: 1; transform: translateY(0)      scale(1.00); }
 }
 @keyframes orbFilledFloat {
   0%, 100% { transform: translateY(0); }
@@ -501,8 +506,15 @@ html, body {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--text-muted);
-  animation: completionPulse 2.4s ease-in-out infinite;
+  /* Hold the label until the orb has finished travelling, then start the pulse */
+  animation:
+    labelAppear 1500ms ease backwards,
+    completionPulse 2.4s ease-in-out infinite 1500ms;
   transition: opacity 0.35s ease;
+}
+@keyframes labelAppear {
+  0%, 75% { opacity: 0; transform: translateY(6px); }
+  100%    { opacity: 0.45; transform: translateY(0); }
 }
 #screen-question.completing .completion-orb.filled ~ .completion-label {
   opacity: 0;
@@ -514,10 +526,18 @@ html, body {
   50%      { opacity: 1; }
 }
 
-/* During completion, the topbar progress ring fades — the centred orb owns
-   the moment. */
-#screen-question.completing .progress-ring-wrap { opacity: 0; transition: opacity 0.5s ease; }
-#screen-question.completing .btn-back { opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+/* During completion, the topbar progress ring fades quickly — the centred
+   orb takes over the visual journey from there. */
+#screen-question.completing .progress-ring-wrap {
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+#screen-question.completing .btn-back {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
 
 /* Loading dots */
 .loading-dots {
@@ -1078,6 +1098,7 @@ html, body {
   </div>
 
   <div class="sidebar-section">
+    <button class="sidebar-button" id="btn-preview-orb" style="background:#f0f0f0;color:var(--text-primary);margin-bottom:8px;">Preview orb reveal</button>
     <button class="sidebar-button" id="btn-restart">Restart quiz</button>
   </div>
 </aside>
@@ -1194,6 +1215,20 @@ function initSidebar() {
     r.addEventListener('change', () => setPromptVersion('mirror', r.value));
   });
   document.getElementById('btn-restart')?.addEventListener('click', restartQuiz);
+  document.getElementById('btn-preview-orb')?.addEventListener('click', previewOrb);
+}
+
+// Sidebar shortcut: jump straight to the orb reveal so we can iterate on it
+// without playing the whole quiz. Stays on the same screen — tap re-plays.
+function previewOrb() {
+  state.previewOrbMode = true;
+  state.mirrorPromise = null;
+  showScreen('screen-question');
+  document.getElementById('btn-results').classList.remove('visible');
+  document.getElementById('screen-question').classList.add('completing');
+  const orb = document.getElementById('completion-orb');
+  orb.classList.remove('filled');
+  try { document.getElementById('orb-video')?.load(); } catch {}
 }
 
 // ── iOS clock — live time ──────────────────────────────────────────
@@ -1398,6 +1433,13 @@ async function onOrbTap() {
     try { video.currentTime = 0; await video.play(); } catch {}
   }
 
+  // Preview mode: stay on this screen so the orb visuals can be iterated on.
+  if (state.previewOrbMode) {
+    await sleep(3500);
+    orb.classList.remove('filled');
+    return;
+  }
+
   // Hold the orb on screen for a beat AND wait for mirror data.
   const data = await Promise.race([
     state.mirrorPromise || Promise.resolve(null),
@@ -1462,6 +1504,7 @@ function restartQuiz() {
   state.current = null;
   state.mirrorData = null;
   state.mirrorPromise = null;
+  state.previewOrbMode = false;
   document.getElementById('btn-results').classList.remove('visible');
   document.getElementById('screen-question').classList.remove('completing');
   document.getElementById('completion-orb').classList.remove('filled');
