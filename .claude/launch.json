@@ -4,8 +4,8 @@
     {
       "name": "wabi-mirror",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["index.js"],
-      "port": 3456
+      "runtimeArgs": ["server.js"],
+      "port": 3458
     }
   ]
 }

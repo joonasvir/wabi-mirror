@@ -419,6 +419,267 @@ html, body {
 }
 .btn-results:hover { color: var(--text-secondary); }
 
+/* ─── Creators screen (new entry) ───────────────────────────── */
+#screen-creators {
+  background: var(--bg);
+}
+
+.creators-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px 0;
+  height: 64px;
+  margin-top: 47px;
+  flex-shrink: 0;
+}
+
+/* Empty ring on creators screen — visual continuity into the orb */
+.creators-ring {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid rgba(0,0,0,0.12);
+  background: transparent;
+  transition: opacity 0.25s ease;
+}
+
+.creators-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 16px 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 36px;
+}
+
+/* Invite friends card */
+.invite-card {
+  width: 100%;
+  max-width: 361px;
+  position: relative;
+  background: white;
+  border-radius: 28px;
+  padding: 22px 60px 22px 22px;
+  box-shadow:
+    inset -1px -1px 1px rgba(0,0,0,0.18),
+    inset 1px 1px 1px rgba(0,0,0,0.03),
+    0 1.2px 2.4px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.invite-card:active { transform: scale(0.985); }
+
+.invite-avatars { display: flex; align-items: center; height: 40px; }
+.invite-avatars .invite-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid white;
+  margin-right: -16px;
+  flex-shrink: 0;
+}
+.invite-avatars .invite-avatar:last-child { margin-right: 0; }
+
+.invite-title {
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: -0.2px;
+}
+.invite-subtitle {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 19px;
+  max-width: 230px;
+}
+.invite-chevron {
+  position: absolute;
+  top: 50%;
+  right: 22px;
+  transform: translateY(-50%);
+  opacity: 0.4;
+}
+
+/* Featured creators block */
+.creators-featured {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+.creators-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.95);
+  border: 1px solid rgba(255,255,255,1);
+  box-shadow:
+    inset 0 1px 4px rgba(255,255,255,1),
+    inset 0 -4px 4px rgba(255,255,255,0.95),
+    inset 0 0 14px #e5e5e5,
+    0 3px 4px rgba(0,0,0,0.10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.creators-badge svg { opacity: 0.85; }
+.creators-title {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: -0.2px;
+  text-align: center;
+  max-width: 280px;
+  line-height: 24px;
+}
+.creators-subtitle {
+  font-size: 16px;
+  font-weight: 400;
+  color: #737373;
+  line-height: 22px;
+  text-align: center;
+  max-width: 284px;
+}
+.follow-all-btn {
+  margin-top: 4px;
+  height: 44px;
+  padding: 0 24px;
+  border-radius: 999px;
+  background: #121212;
+  color: #f2f2f2;
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.follow-all-btn:active { transform: scale(0.97); }
+.follow-all-btn.active {
+  background: #f0f0f0;
+  color: var(--text-primary);
+}
+
+/* Creator list */
+.creator-list {
+  width: 100%;
+  max-width: 361px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.creator-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 42px;
+}
+.creator-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+.creator-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.creator-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.creator-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
+  opacity: 0.7;
+  line-height: 18px;
+}
+.creator-handle {
+  font-size: 16px;
+  font-weight: 400;
+  color: #737373;
+  opacity: 0.7;
+  line-height: 18px;
+}
+.follow-btn {
+  width: 90px;
+  height: 36px;
+  border-radius: 999px;
+  background: #121212;
+  color: #f2f2f2;
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.15s ease, background 0.2s ease, color 0.2s ease;
+  box-shadow: 0 2px 2px rgba(0,0,0,0.16);
+}
+.follow-btn:active { transform: scale(0.96); }
+.follow-btn.active {
+  background: #f0f0f0;
+  color: var(--text-primary);
+}
+
+/* Sticky bottom Next */
+.creators-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 24px 16px 24px;
+  background: linear-gradient(to top, rgba(255,255,255,1) 70%, rgba(255,255,255,0));
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 10;
+}
+.creators-next {
+  pointer-events: all;
+  width: 100%;
+  max-width: 361px;
+  height: 60px;
+  border-radius: 999px;
+  background: #171717;
+  color: #fafafa;
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 2px rgba(0,0,0,0.16);
+  transition: transform 0.15s ease, opacity 0.2s ease;
+}
+.creators-next:active { transform: scale(0.985); }
+
+/* Exit transition when Next is tapped: content fades+lifts, ring stays */
+#screen-creators.exiting .creators-scroll,
+#screen-creators.exiting .creators-bottom {
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.32s ease, transform 0.32s ease;
+}
+#screen-creators .creators-scroll,
+#screen-creators .creators-bottom {
+  transition: opacity 0.32s ease, transform 0.32s ease;
+}
+#screen-creators.exiting .creators-ring { opacity: 0; }
+
 /* ─── Completion ritual ─────────────────────────────────────── */
 .completion-state {
   flex: 1;
@@ -452,9 +713,10 @@ html, body {
 .completion-orb.filled { animation: orbFilledFloat 4s ease-in-out infinite; cursor: default; }
 
 @keyframes orbStoryboard {
-  /* Frames 1→2: appear at the topbar ring position, same 40px size */
-  0%   { opacity: 0; transform: translateY(-380px) scale(0.30); }
-  18%  { opacity: 1; transform: translateY(-380px) scale(0.30); }
+  /* Frames 1→2: appear at the topbar ring position (~80px from app top),
+     scaled to match the 40px topbar ring (40/132 ≈ 0.303). */
+  0%   { opacity: 0; transform: translateY(-338px) scale(0.303); }
+  18%  { opacity: 1; transform: translateY(-338px) scale(0.303); }
   /* Frames 2→3: travel down to centre, scaling up to full 132px */
   100% { opacity: 1; transform: translateY(0)      scale(1.00); }
 }
@@ -817,6 +1079,257 @@ html, body {
 }
 .apps-done-btn.visible { opacity: 1; }
 
+/* ─── Handpicked Wabis (post-orb cards) ───────────────────── */
+#screen-handpicked {
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.hp-header {
+  width: 100%;
+  padding: 80px 24px 0;
+  text-align: center;
+  flex-shrink: 0;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+#screen-handpicked.show-header .hp-header { opacity: 1; transform: translateY(0); }
+
+.hp-title {
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: -0.3px;
+  line-height: 27px;
+  margin-bottom: 10px;
+}
+.hp-subtitle {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 20px;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+/* Carousel area */
+.hp-stage {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  padding-top: 20px;
+}
+
+.hp-track {
+  width: 100%;
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  padding: 60px calc(50% - 121px); /* center first/last card (card half ≈ 121px) */
+  scrollbar-width: none;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hp-track::-webkit-scrollbar { display: none; }
+#screen-handpicked.show-cards .hp-track { opacity: 1; transform: translateY(0); }
+
+.hp-card {
+  flex-shrink: 0;
+  width: 242px;
+  height: 274px;
+  background: white;
+  border-radius: 26px;
+  box-shadow:
+    0 1.2px 2.4px rgba(0,0,0,0.06),
+    0 8px 24px rgba(0,0,0,0.06),
+    inset -1px -1px 1px rgba(0,0,0,0.18),
+    inset 1px 1px 1px rgba(0,0,0,0.03);
+  scroll-snap-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 22px 18px 26px;
+  gap: 16px;
+  transform: scale(0.9);
+  opacity: 0.55;
+  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1),
+              opacity 0.32s ease,
+              filter 0.3s ease;
+  cursor: pointer;
+}
+.hp-card.is-active {
+  transform: scale(1);
+  opacity: 1;
+}
+.hp-card.deselected {
+  filter: grayscale(0.9) brightness(0.96);
+  opacity: 0.45;
+}
+.hp-card.deselected.is-active { opacity: 0.7; }
+
+.hp-card-orb {
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,0.18));
+  transition: filter 0.3s ease;
+}
+.hp-card.deselected .hp-card-orb { filter: drop-shadow(0 4px 10px rgba(0,0,0,0.08)) saturate(0.3); }
+
+.hp-card-name {
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+  color: #b56b1f;
+  line-height: 22px;
+  text-align: center;
+}
+.hp-card-sub {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 18px;
+  text-align: center;
+  margin-top: -10px;
+}
+
+/* Top-left badge — pill while active, dot when settled */
+.hp-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px 0 6px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 999px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.10), 0 0 0 0.5px rgba(0,0,0,0.05);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: -0.1px;
+  white-space: nowrap;
+  cursor: pointer;
+  border: none;
+  font-family: var(--font);
+  transition: padding 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              background 0.25s ease,
+              box-shadow 0.25s ease;
+}
+.hp-badge-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: background 0.25s ease, border 0.25s ease;
+  flex-shrink: 0;
+}
+.hp-badge-icon svg { display: block; }
+.hp-badge-label {
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 120px;
+  opacity: 1;
+  transition: max-width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.25s ease,
+              margin 0.45s ease;
+}
+.hp-badge.collapsed { padding: 0; }
+.hp-badge.collapsed .hp-badge-label {
+  max-width: 0;
+  opacity: 0;
+  margin: 0;
+}
+.hp-card.deselected .hp-badge-icon {
+  background: transparent;
+  border: 1.5px solid rgba(0,0,0,0.3);
+}
+.hp-card.deselected .hp-badge-icon svg { display: none; }
+
+/* Reason caption below the carousel */
+.hp-reason {
+  text-align: center;
+  padding: 4px 32px 0;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 18px;
+  min-height: 36px;
+  max-width: 320px;
+  margin: 0 auto;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.hp-reason.italic { font-style: italic; color: var(--text-muted); }
+#screen-handpicked.show-cards .hp-reason { opacity: 1; }
+
+/* Bottom Finish CTA */
+.hp-bottom {
+  padding: 16px 16px 28px;
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+#screen-handpicked.show-cards .hp-bottom { opacity: 1; transform: translateY(0); }
+.hp-finish {
+  width: 100%;
+  max-width: 361px;
+  height: 56px;
+  border-radius: 999px;
+  background: #171717;
+  color: #fafafa;
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 2px rgba(0,0,0,0.16);
+  transition: transform 0.15s ease;
+}
+.hp-finish:active { transform: scale(0.985); }
+
+/* "Making magic…" caption shown during the handoff from orb to cards */
+.hp-magic {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, calc(-50% + 100px));
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-muted);
+  letter-spacing: -0.1px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+  z-index: 5;
+}
+#screen-handpicked.magic .hp-magic { opacity: 1; }
+
 /* ─── Transition animations ────────────────────────────────── */
 @keyframes fadeSlideUp {
   from { opacity: 0; transform: translateY(20px); }
@@ -970,8 +1483,49 @@ html, body {
     </div>
   </div>
 
-  <!-- ── INTRO ───────────────────────────────────────────── -->
-  <div class="screen active" id="screen-intro">
+  <!-- ── CREATORS (entry) ────────────────────────────────── -->
+  <div class="screen active" id="screen-creators">
+    <div class="creators-topbar">
+      <div class="creators-ring" aria-hidden="true"></div>
+    </div>
+
+    <div class="creators-scroll">
+      <!-- Invite friends card -->
+      <div class="invite-card" role="button" tabindex="0">
+        <div class="invite-avatars" id="invite-avatars"></div>
+        <div class="invite-title">Invite your friends to Wabi</div>
+        <div class="invite-subtitle">Wabi is social and best experienced with friends</div>
+        <svg class="invite-chevron" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M5 2.5L9.5 7L5 11.5" stroke="#0a0a0a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <!-- Featured block -->
+      <div class="creators-featured">
+        <div class="creators-badge">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" stroke="#0a0a0a" stroke-width="1.4" fill="none"/>
+            <path d="M8 14c1 1.2 2.4 1.8 4 1.8s3-.6 4-1.8" stroke="#0a0a0a" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+            <circle cx="9" cy="10.5" r="0.9" fill="#0a0a0a"/>
+            <circle cx="15" cy="10.5" r="0.9" fill="#0a0a0a"/>
+          </svg>
+        </div>
+        <h2 class="creators-title">Featured creators to follow</h2>
+        <p class="creators-subtitle">We've curated the best creators to follow based on your interests</p>
+        <button class="follow-all-btn" id="btn-follow-all" type="button">Follow all</button>
+      </div>
+
+      <!-- Creator list -->
+      <div class="creator-list" id="creator-list"></div>
+    </div>
+
+    <div class="creators-bottom">
+      <button class="creators-next" id="btn-creators-next" type="button">Next</button>
+    </div>
+  </div>
+
+  <!-- ── INTRO (legacy) ──────────────────────────────────── -->
+  <div class="screen" id="screen-intro">
     <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 32px; text-align:center;">
       <div class="intro-orblet"></div>
       <h1 class="intro-title">Wabi Mirror</h1>
@@ -1032,7 +1586,23 @@ html, body {
     </div>
   </div>
 
-  <!-- ── MIRROR ───────────────────────────────────────────── -->
+  <!-- ── HANDPICKED WABIS (post-orb) ─────────────────────── -->
+  <div class="screen" id="screen-handpicked">
+    <div class="hp-magic">Making magic…</div>
+    <div class="hp-header">
+      <h2 class="hp-title">Handpicked for your home screen</h2>
+      <p class="hp-subtitle">We picked you personalized starter Wabis! You can unselect picks you don't like</p>
+    </div>
+    <div class="hp-stage">
+      <div class="hp-track" id="hp-track"></div>
+    </div>
+    <p class="hp-reason" id="hp-reason"></p>
+    <div class="hp-bottom">
+      <button class="hp-finish" id="btn-hp-finish" type="button">Finish and see Home</button>
+    </div>
+  </div>
+
+  <!-- ── MIRROR (legacy, unused) ──────────────────────────── -->
   <div class="screen" id="screen-mirror">
     <div class="mirror-topbar">
       <button class="btn-back-dark" onclick="showScreen('screen-question')">
@@ -1526,16 +2096,21 @@ async function onOrbTap() {
     return;
   }
 
-  // Wait for mirror data + let the 3D asset play for ~10 seconds.
-  const data = await Promise.race([
-    state.mirrorPromise || Promise.resolve(null),
-    new Promise((_, rej) => setTimeout(() => rej('timeout'), 20000)),
-  ]).catch(() => null);
-
+  // Let the 3D asset play for a beat, then advance.
   await sleep(10000);
   delete orb.dataset.filling;
 
-  showMirrorWithData(data);
+  onOrbRevealDone();
+}
+
+// After the orb reveal finishes, hand off to the handpicked-cards screen.
+function onOrbRevealDone() {
+  // Reset question screen so we can re-enter the flow cleanly later.
+  document.getElementById('screen-question').classList.remove('completing');
+  document.getElementById('completion-orb').classList.remove('filled');
+  setOrbProgress(0);
+  document.getElementById('screen-creators').classList.remove('exiting');
+  enterHandpicked();
 }
 
 function showMirrorWithData(data) {
@@ -1690,8 +2265,326 @@ function drawWabiMark(dimensions) {
   });
 }
 
+// ── Creators screen (entry) ────────────────────────────────────────
+const CREATORS = [
+  { name: 'Tea Taylor',     handle: '@teataylor',  seed: 1 },
+  { name: 'Marco Vidal',    handle: '@marcov',     seed: 2 },
+  { name: 'Jules Park',     handle: '@julesp',     seed: 3 },
+  { name: 'Reni Okafor',    handle: '@reni',       seed: 4 },
+  { name: 'Saoirse Lin',    handle: '@saoirse',    seed: 5 },
+];
+
+// Deterministic gradient avatar as an inline SVG data URL — no external assets,
+// stable colours per seed.
+function avatarDataUrl(seed, size = 84) {
+  // Two-stop gradient from a hue ramp keyed off the seed.
+  const hue1 = (seed * 47) % 360;
+  const hue2 = (hue1 + 38) % 360;
+  const c1 = `hsl(${hue1}, 65%, 62%)`;
+  const c2 = `hsl(${hue2}, 60%, 42%)`;
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${size} ${size}'>
+    <defs>
+      <radialGradient id='g${seed}' cx='35%' cy='32%' r='75%'>
+        <stop offset='0%' stop-color='${c1}'/>
+        <stop offset='100%' stop-color='${c2}'/>
+      </radialGradient>
+    </defs>
+    <circle cx='${size/2}' cy='${size/2}' r='${size/2}' fill='url(#g${seed})'/>
+    <ellipse cx='${size*0.36}' cy='${size*0.30}' rx='${size*0.22}' ry='${size*0.12}' fill='rgba(255,255,255,0.35)'/>
+  </svg>`;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
+function renderCreators() {
+  const list = document.getElementById('creator-list');
+  list.innerHTML = '';
+  CREATORS.forEach(c => {
+    const row = document.createElement('div');
+    row.className = 'creator-row';
+    row.innerHTML = `
+      <div class="creator-meta">
+        <div class="creator-avatar"><img src="${avatarDataUrl(c.seed)}" alt="" width="42" height="42"></div>
+        <div class="creator-info">
+          <div class="creator-name">${c.name}</div>
+          <div class="creator-handle">${c.handle}</div>
+        </div>
+      </div>
+      <button class="follow-btn" type="button">Follow</button>
+    `;
+    const btn = row.querySelector('.follow-btn');
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('active');
+      btn.textContent = btn.classList.contains('active') ? 'Following' : 'Follow';
+    });
+    list.appendChild(row);
+  });
+
+  // Stacked avatars on the invite card
+  const stack = document.getElementById('invite-avatars');
+  stack.innerHTML = '';
+  [6, 7, 8, 9].forEach(seed => {
+    const img = document.createElement('img');
+    img.className = 'invite-avatar';
+    img.src = avatarDataUrl(seed, 60);
+    img.alt = '';
+    stack.appendChild(img);
+  });
+}
+
+function enterOrbFromCreators() {
+  const creators = document.getElementById('screen-creators');
+  if (creators.classList.contains('exiting')) return;
+
+  // Fade creators content out — ring stays put visually because the orb
+  // storyboard begins at the same screen position.
+  creators.classList.add('exiting');
+
+  setTimeout(() => {
+    // Swap to the question screen in its completing state. The completion-orb's
+    // CSS animation will spawn at the topbar position and travel to centre.
+    showScreen('screen-question');
+    document.getElementById('btn-results').classList.remove('visible');
+    setOrbProgress(0);
+    const sq = document.getElementById('screen-question');
+    sq.classList.add('completing');
+    try { document.getElementById('orb-video')?.load(); } catch {}
+    setTimeout(() => onOrbTap(), 1100);
+  }, 280);
+}
+
+function wireCreators() {
+  renderCreators();
+  document.getElementById('btn-creators-next')?.addEventListener('click', enterOrbFromCreators);
+  document.getElementById('btn-follow-all')?.addEventListener('click', (e) => {
+    const btn = e.currentTarget;
+    btn.classList.toggle('active');
+    const on = btn.classList.contains('active');
+    btn.textContent = on ? 'Following all' : 'Follow all';
+    document.querySelectorAll('#creator-list .follow-btn').forEach(b => {
+      b.classList.toggle('active', on);
+      b.textContent = on ? 'Following' : 'Follow';
+    });
+  });
+}
+
+// ── Handpicked Wabis ───────────────────────────────────────────────
+// Mock Wabi data — palette + seed drive the orb gradient. Real flow will
+// pull these from /api/mirror later.
+const WABIS = [
+  { id: 'morning-yoga',   name: 'Morning Yoga',    sub: 'routines',  reason: 'mornings, mindfulness, and gentle starts',
+    hue1: 28,  hue2: 12,  light1: 64, light2: 38 },
+  { id: 'best-martinis',  name: 'Best Martinis',   sub: 'tracker',   reason: 'cocktail craft and refined taste',
+    hue1: 264, hue2: 220, light1: 60, light2: 32 },
+  { id: 'lorem-dolor',    name: 'Lorem Dolor',     sub: 'companion', reason: 'creative writing prompts and journaling',
+    hue1: 200, hue2: 218, light1: 60, light2: 36 },
+  { id: 'desk-tunes',     name: 'Desk Tunes',      sub: 'focus mix', reason: 'long focus sessions and instrumental music',
+    hue1: 168, hue2: 188, light1: 56, light2: 30 },
+  { id: 'evening-stretch',name: 'Evening Stretch', sub: 'wind-down', reason: 'recovery, mobility, and end-of-day rituals',
+    hue1: 12,  hue2: 348, light1: 60, light2: 36 },
+];
+
+const hpState = {
+  active: 0,
+  selected: new Set(WABIS.map(w => w.id)), // all selected by default
+  badgeTimers: new Map(),
+};
+
+function orbDataUrl(w, size = 132) {
+  const c1 = `hsl(${w.hue1}, 78%, ${w.light1}%)`;
+  const c2 = `hsl(${w.hue2}, 70%, ${w.light2}%)`;
+  // Concentric gradient + highlight for a glassy orb look.
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${size} ${size}'>
+    <defs>
+      <radialGradient id='b' cx='32%' cy='28%' r='80%'>
+        <stop offset='0%' stop-color='${c1}'/>
+        <stop offset='65%' stop-color='${c2}'/>
+        <stop offset='100%' stop-color='${c2}'/>
+      </radialGradient>
+      <radialGradient id='h' cx='35%' cy='25%' r='35%'>
+        <stop offset='0%' stop-color='rgba(255,255,255,0.85)'/>
+        <stop offset='100%' stop-color='rgba(255,255,255,0)'/>
+      </radialGradient>
+    </defs>
+    <circle cx='${size/2}' cy='${size/2}' r='${size/2 - 2}' fill='url(#b)'/>
+    <ellipse cx='${size*0.38}' cy='${size*0.30}' rx='${size*0.22}' ry='${size*0.13}' fill='url(#h)'/>
+    <circle cx='${size/2}' cy='${size/2}' r='${size/2 - 2}' fill='none' stroke='rgba(0,0,0,0.06)' stroke-width='1'/>
+  </svg>`;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
+function renderHandpicked() {
+  const track = document.getElementById('hp-track');
+  track.innerHTML = '';
+  WABIS.forEach((w, i) => {
+    const card = document.createElement('div');
+    card.className = 'hp-card';
+    card.dataset.id = w.id;
+    card.dataset.index = i;
+    card.innerHTML = `
+      <button class="hp-badge" type="button" aria-label="Toggle selection">
+        <span class="hp-badge-icon">
+          <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+            <path d="M2.5 6.2L5 8.5L9.5 3.8" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span class="hp-badge-label">Adding to Home</span>
+      </button>
+      <img class="hp-card-orb" src="${orbDataUrl(w)}" alt="" width="132" height="132" draggable="false">
+      <div class="hp-card-name" style="color:hsl(${w.hue1},58%,38%)">${w.name}</div>
+      <div class="hp-card-sub">${w.sub}</div>
+    `;
+    card.querySelector('.hp-badge').addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleSelection(w.id, card);
+    });
+    card.addEventListener('click', () => {
+      const idx = parseInt(card.dataset.index, 10);
+      if (idx !== hpState.active) scrollToCard(idx);
+    });
+    track.appendChild(card);
+  });
+
+  // Active-card tracking via scroll position (snap-snapped center).
+  track.addEventListener('scroll', () => {
+    const center = track.scrollLeft + track.clientWidth / 2;
+    let best = 0, bestDist = Infinity;
+    Array.from(track.children).forEach((card, i) => {
+      const mid = card.offsetLeft + card.offsetWidth / 2;
+      const d = Math.abs(mid - center);
+      if (d < bestDist) { bestDist = d; best = i; }
+    });
+    if (best !== hpState.active) setActiveCard(best);
+  }, { passive: true });
+}
+
+function scrollToCard(idx) {
+  const track = document.getElementById('hp-track');
+  const card = track.children[idx];
+  if (!card) return;
+  const target = card.offsetLeft + card.offsetWidth / 2 - track.clientWidth / 2;
+  track.scrollTo({ left: target, behavior: 'smooth' });
+}
+
+function setActiveCard(idx) {
+  hpState.active = idx;
+  const track = document.getElementById('hp-track');
+  Array.from(track.children).forEach((card, i) => {
+    card.classList.toggle('is-active', i === idx);
+  });
+  updateReasonCaption();
+
+  // When focus moves to a new card, briefly show the "Adding to Home" label
+  // before collapsing the badge to the dot.
+  const card = track.children[idx];
+  if (!card) return;
+  const badge = card.querySelector('.hp-badge');
+  const wabi = WABIS[idx];
+  if (hpState.selected.has(wabi.id)) {
+    showBadgeLabel(card, wabi.id, false);
+  } else {
+    badge.classList.add('collapsed');
+  }
+}
+
+function showBadgeLabel(card, id, withDelay) {
+  const badge = card.querySelector('.hp-badge');
+  if (hpState.badgeTimers.has(id)) {
+    clearTimeout(hpState.badgeTimers.get(id));
+  }
+  if (withDelay) {
+    badge.classList.add('collapsed');
+    requestAnimationFrame(() => badge.classList.remove('collapsed'));
+  } else {
+    badge.classList.remove('collapsed');
+  }
+  const t = setTimeout(() => badge.classList.add('collapsed'), 1500);
+  hpState.badgeTimers.set(id, t);
+}
+
+function toggleSelection(id, card) {
+  const wasSelected = hpState.selected.has(id);
+  if (wasSelected) {
+    hpState.selected.delete(id);
+    card.classList.add('deselected');
+    card.querySelector('.hp-badge').classList.add('collapsed');
+  } else {
+    hpState.selected.add(id);
+    card.classList.remove('deselected');
+    // Show "Adding to Home" pill again on re-select.
+    showBadgeLabel(card, id, true);
+  }
+  updateReasonCaption();
+  updateFinishLabel();
+}
+
+function updateReasonCaption() {
+  const el = document.getElementById('hp-reason');
+  const wabi = WABIS[hpState.active];
+  if (!wabi) return;
+  if (hpState.selected.has(wabi.id)) {
+    el.classList.remove('italic');
+    el.textContent = `Because you are into ${wabi.reason}`;
+  } else {
+    el.classList.add('italic');
+    el.textContent = 'Excluding this app from your home screen.';
+  }
+}
+
+function updateFinishLabel() {
+  const btn = document.getElementById('btn-hp-finish');
+  const n = hpState.selected.size;
+  btn.textContent = n > 0 ? 'Finish and see Home' : 'Skip and see Home';
+}
+
+// Choreographed entry — orb finishes its reveal, this screen takes over.
+function enterHandpicked() {
+  // Reset state for re-runs
+  hpState.active = 0;
+  hpState.selected = new Set(WABIS.map(w => w.id));
+  hpState.badgeTimers.forEach(t => clearTimeout(t));
+  hpState.badgeTimers.clear();
+
+  renderHandpicked();
+
+  const screen = document.getElementById('screen-handpicked');
+  screen.classList.remove('show-header', 'show-cards', 'magic');
+  showScreen('screen-handpicked');
+
+  // Phase 1: brief "Making magic…" beat
+  requestAnimationFrame(() => screen.classList.add('magic'));
+
+  // Phase 2: cards rise in, header fades in
+  setTimeout(() => {
+    screen.classList.remove('magic');
+    screen.classList.add('show-cards');
+    setTimeout(() => screen.classList.add('show-header'), 220);
+
+    // Phase 3: center first card, run the "Adding to Home" pill flourish
+    const track = document.getElementById('hp-track');
+    Array.from(track.children).forEach((c, i) => c.classList.toggle('is-active', i === 0));
+    track.scrollLeft = 0; // first card centered by padding
+    updateReasonCaption();
+    setTimeout(() => {
+      const firstCard = track.children[0];
+      if (firstCard) showBadgeLabel(firstCard, WABIS[0].id, true);
+    }, 400);
+  }, 900);
+}
+
+function exitHandpickedToCreators() {
+  const screen = document.getElementById('screen-handpicked');
+  screen.classList.remove('show-cards', 'show-header', 'magic');
+  setTimeout(() => showScreen('screen-creators'), 200);
+}
+
+function wireHandpicked() {
+  document.getElementById('btn-hp-finish')?.addEventListener('click', exitHandpickedToCreators);
+}
+
 // ── Boot ───────────────────────────────────────────────────────────
 initSidebar();
+wireCreators();
+wireHandpicked();
 updateClock();
 setInterval(updateClock, 30 * 1000);
 </script>

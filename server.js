@@ -204,7 +204,7 @@ app.get('/api/icons/search', (req, res) => {
   res.json({ icon: findIcon(q) });
 });
 
-const PORT = process.env.PORT || 3456;
+const PORT = process.env.PORT || 3458;
 app.listen(PORT, () => {
   console.log(`Wabi Mirror → http://localhost:${PORT}`);
   if (!process.env.ANTHROPIC_API_KEY) {
