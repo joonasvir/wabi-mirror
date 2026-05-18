@@ -477,9 +477,25 @@ html, body {
   50%      { opacity: 1; }
 }
 
+/* Exit choreography — orb shrinks + fades in place while the handpicked
+   cards rise from below. Both screens stay .active for the overlap window;
+   the orb screen's .active class is removed once the cards have landed. */
+#screen-orb.exiting .completion-state {
+  transform: scale(0.6);
+  opacity: 0;
+  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 600ms ease 300ms;
+}
+#screen-orb.exiting .completion-orb.filled ~ .completion-label {
+  opacity: 0.7;
+  transition: opacity 350ms ease;
+}
+
 /* ─── Handpicked Wabis (post-orb cards) ───────────────────── */
 #screen-handpicked {
-  background: var(--bg);
+  /* Background is intentionally transparent so the orb screen can fade
+     out underneath during the handoff overlap. #app provides the white. */
+  background: transparent;
   overflow: hidden;
 }
 
@@ -711,23 +727,6 @@ html, body {
 }
 .hp-finish:active { transform: scale(0.985); }
 
-/* "Making magic…" caption shown during the handoff from orb to cards */
-.hp-magic {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, calc(-50% + 100px));
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--text-muted);
-  letter-spacing: -0.1px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.45s ease;
-  z-index: 5;
-}
-#screen-handpicked.magic .hp-magic { opacity: 1; }
-
 /* ─── Transition animations ────────────────────────────────── */
 @keyframes fadeSlideUp {
   from { opacity: 0; transform: translateY(20px); }
@@ -940,7 +939,6 @@ html, body {
 
   <!-- ── HANDPICKED WABIS (post-orb) ─────────────────────── -->
   <div class="screen" id="screen-handpicked">
-    <div class="hp-magic">Making magic…</div>
     <div class="hp-header">
       <h2 class="hp-title">Handpicked for your home screen</h2>
       <p class="hp-subtitle">We picked you personalized starter Wabis! You can unselect picks you don't like</p>
@@ -1055,9 +1053,12 @@ function initSidebar() {
 
 function restartPrototype() {
   state.previewOrbMode = false;
-  document.getElementById('screen-orb')?.classList.remove('completing');
+  document.getElementById('screen-orb')?.classList.remove('completing', 'exiting');
   document.getElementById('completion-orb')?.classList.remove('filled');
+  document.getElementById('screen-handpicked')?.classList.remove('show-cards', 'show-header');
   document.getElementById('screen-creators')?.classList.remove('exiting');
+  const lbl = document.getElementById('completion-label');
+  if (lbl) lbl.textContent = 'Reading you';
   setOrbProgress(0);
   showScreen('screen-creators');
 }
@@ -1068,6 +1069,9 @@ function previewOrb() {
   // Start the centre ring at 50% so the fill animation is visible.
   setOrbProgress(0.5);
   const orbScreen = document.getElementById('screen-orb');
+  orbScreen.classList.remove('exiting');
+  const lbl = document.getElementById('completion-label');
+  if (lbl) lbl.textContent = 'Reading you';
   orbScreen.classList.add('completing'); // retriggers the storyboard animation
   // Force reflow so the animation restarts cleanly on re-preview.
   const orbEl = document.getElementById('completion-orb');
@@ -1138,12 +1142,49 @@ async function onOrbTap() {
 }
 
 // After the orb reveal finishes, hand off to the handpicked-cards screen.
+// Both screens stay .active during the overlap so the orb fades in place
+// while the card stack rises from below — one continuous motion instead of
+// a hard screen swap.
 function onOrbRevealDone() {
-  document.getElementById('screen-orb').classList.remove('completing');
-  document.getElementById('completion-orb').classList.remove('filled');
-  setOrbProgress(0);
-  document.getElementById('screen-creators').classList.remove('exiting');
-  enterHandpicked();
+  const orbScreen = document.getElementById('screen-orb');
+  const handpicked = document.getElementById('screen-handpicked');
+  const label = document.getElementById('completion-label');
+
+  // Surface a "Making magic…" beat on the orb's existing label as it shrinks.
+  if (label) label.textContent = 'Making magic…';
+  orbScreen.classList.add('exiting');
+
+  // Prep the handpicked screen offscreen, then bring it in *alongside* the orb.
+  prepareHandpicked();
+  handpicked.classList.add('active'); // both screens active simultaneously
+  // Force a reflow before adding show-cards so the rise animation runs.
+  void handpicked.offsetWidth;
+  handpicked.classList.add('show-cards');
+
+  // After cards land, fade out the orb screen and clean it up.
+  setTimeout(() => {
+    handpicked.classList.add('show-header');
+  }, 350);
+
+  setTimeout(() => {
+    const track = document.getElementById('hp-track');
+    const firstCard = track?.children[0];
+    if (firstCard) showBadgeLabel(firstCard, WABIS[0].id, true);
+  }, 700);
+
+  setTimeout(() => {
+    orbScreen.classList.remove('active');
+  }, 850);
+
+  // Final cleanup — once orb screen is fully gone, reset its internal state
+  // so a Restart/Preview re-entry runs the storyboard from scratch.
+  setTimeout(() => {
+    orbScreen.classList.remove('exiting', 'completing');
+    document.getElementById('completion-orb').classList.remove('filled');
+    if (label) label.textContent = 'Reading you';
+    setOrbProgress(0);
+    document.getElementById('screen-creators').classList.remove('exiting');
+  }, 1400);
 }
 
 // ── Creators screen (entry) ────────────────────────────────────────
@@ -1420,9 +1461,10 @@ function updateFinishLabel() {
   btn.textContent = n > 0 ? 'Finish and see Home' : 'Skip and see Home';
 }
 
-// Choreographed entry — orb finishes its reveal, this screen takes over.
-function enterHandpicked() {
-  // Reset state for re-runs
+// Reset handpicked state and render cards in their pre-entry pose. Does NOT
+// activate the screen — the orb→cards handoff in onOrbRevealDone handles
+// that timing so it can overlap with the orb's exit.
+function prepareHandpicked() {
   hpState.active = 0;
   hpState.selected = new Set(WABIS.map(w => w.id));
   hpState.badgeTimers.forEach(t => clearTimeout(t));
@@ -1431,33 +1473,17 @@ function enterHandpicked() {
   renderHandpicked();
 
   const screen = document.getElementById('screen-handpicked');
-  screen.classList.remove('show-header', 'show-cards', 'magic');
-  showScreen('screen-handpicked');
+  screen.classList.remove('show-header', 'show-cards');
 
-  // Phase 1: brief "Making magic…" beat
-  requestAnimationFrame(() => screen.classList.add('magic'));
-
-  // Phase 2: cards rise in, header fades in
-  setTimeout(() => {
-    screen.classList.remove('magic');
-    screen.classList.add('show-cards');
-    setTimeout(() => screen.classList.add('show-header'), 220);
-
-    // Phase 3: center first card, run the "Adding to Home" pill flourish
-    const track = document.getElementById('hp-track');
-    Array.from(track.children).forEach((c, i) => c.classList.toggle('is-active', i === 0));
-    track.scrollLeft = 0; // first card centered by padding
-    updateReasonCaption();
-    setTimeout(() => {
-      const firstCard = track.children[0];
-      if (firstCard) showBadgeLabel(firstCard, WABIS[0].id, true);
-    }, 400);
-  }, 900);
+  const track = document.getElementById('hp-track');
+  Array.from(track.children).forEach((c, i) => c.classList.toggle('is-active', i === 0));
+  track.scrollLeft = 0;
+  updateReasonCaption();
 }
 
 function exitHandpickedToCreators() {
   const screen = document.getElementById('screen-handpicked');
-  screen.classList.remove('show-cards', 'show-header', 'magic');
+  screen.classList.remove('show-cards', 'show-header');
   setTimeout(() => showScreen('screen-creators'), 200);
 }
 
